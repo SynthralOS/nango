@@ -48,6 +48,8 @@ services:
         volumes:
             - './packages/providers:/app/nango/packages/providers'
         restart: always
+        # Add the following line to force npm install before starting
+        command: sh -c "npm install && /app/nango/packages/server/entrypoint.sh"
         ports:
             - '${SERVER_PORT:-3003}:${SERVER_PORT:-3003}'
             - '${CONNECT_UI_PORT:-3009}:${CONNECT_UI_PORT:-3009}'
