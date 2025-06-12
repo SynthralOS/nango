@@ -14,16 +14,16 @@ services:
         networks:
             - nango
 
-    nango-server:
-        # It's recommended to pin the version using the commit hash tag or a version tag
-        # https://hub.docker.com/r/nangohq/nango-server/tags
-        image: nangohq/nango-server:hosted
-        container_name: nango-server
-        platform: linux/amd64
-        environment:
-            - NANGO_ENCRYPTION_KEY
-            - NANGO_DB_USER
-            - NANGO_DB_PASSWORD
+nango-server:
+    # It's recommended to pin the version using the commit hash tag or a version tag
+    # https://hub.docker.com/r/nangohq/nango-server/tags
+    image: nangohq/nango-server:hosted
+    container_name: nango-server
+    platform: linux/amd64
+    environment:
+        - NANGO_ENCRYPTION_KEY
+        - NANGO_DB_USER
+        - NANGO_DB_PASSWORD
             - NANGO_DB_HOST=${NANGO_DB_HOST:-nango-db}
             - NANGO_DB_NAME
             - NANGO_DB_SSL
@@ -48,22 +48,23 @@ services:
         volumes:
             - './packages/providers:/app/nango/packages/providers'
         restart: always
-        ports:
-            - '${SERVER_PORT:-3003}:${SERVER_PORT:-3003}'
-            - '${CONNECT_UI_PORT:-3009}:${CONNECT_UI_PORT:-3009}'
-        depends_on:
-            - nango-db
-            # - nango-elasticsearch
-        networks:
-            - nango
+    ports:
+        - '${SERVER_PORT:-3003}:8080'
+        - '${CONNECT_UI_PORT:-3009}:${CONNECT_UI_PORT:-3009}'
 
-    nango-redis:
-        image: redis:7.2.4
-        container_name: nango-redis
-        ports:
-            - '6379:6379'
-        networks:
-            - nango
+    depends_on:
+        - nango-db
+        # - nango-elasticsearch
+    networks:
+        - nango
+
+nango-redis:
+    image: redis:7.2.4
+    container_name: nango-redis
+    ports:
+        - '6379:6379'
+    networks:
+        - nango
     #
     # Optional dependency
     # To load elasticsearch, set NANGO_LOGS_ENABLED=true in nango-server and uncomment this dependency
